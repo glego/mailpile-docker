@@ -1,0 +1,8 @@
+---
+# This playbook deploys a simple standalone Mailpile Server
+
+- hosts: mailpile-servers
+  remote_user: root
+
+  roles:
+    - mailpile

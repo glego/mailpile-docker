@@ -1,0 +1,5 @@
+#!/bin/sh
+cd "/app/mailpile"
+venv "./mp --www=0.0.0.0:33411 --wait" # Run the web UI without the CLI interface (https://github.com/mailpile/Mailpile/wiki/Using-the-Web-Interface)
+
+

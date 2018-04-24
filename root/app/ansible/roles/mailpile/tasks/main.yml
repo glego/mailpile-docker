@@ -1,0 +1,10 @@
+---
+- name: copy venv
+  copy:
+    src: venv
+    dest: /usr/bin/venv
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+
+- script: mailpile-config.sh

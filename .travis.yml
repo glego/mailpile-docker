@@ -1,0 +1,13 @@
+
+sudo: required
+language: bash
+
+services:
+  - docker
+
+script:
+  - ./.build/build.sh --app_name=mailpile --app_version=1.0.0rc2 --app_distribution=alpine-3.6 --docker_repository=glego --docker-no-cache=yes
+  - docker images -a
+
+after_success:
+  - ./.build/publish.sh
