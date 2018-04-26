@@ -16,11 +16,11 @@ RUN export "APP_ROOT_DIR=/app" && \
     # Installing run dependencies
     apk update \
     && apk add --no-cache \
-        ca-certificates py-virtualenv ansible openssl gnupg libxslt libxml2 libffi linux-headers zlib && \
+        ca-certificates openssl gnupg1 py-pip && \
     \
     # Installing build dependencies
     apk add --no-cache --virtual .build-deps \
-        git gcc make musl-dev  python-dev linux-headers libffi-dev libxml2-dev libxslt-dev openssl-dev jpeg-dev && \
+        git gcc make musl-dev python-dev libffi-dev libxml2-dev libxslt-dev openssl-dev jpeg-dev && \
     \
     # Installing
     echo "Cloning $APP_NAME version: $APP_VERSION" && \
@@ -29,6 +29,8 @@ RUN export "APP_ROOT_DIR=/app" && \
     git checkout tags/$APP_VERSION && \
     \
     # Setup virtual environment
+    pip install --upgrade pip && \
+    pip install virtualenv && \
     virtualenv "$VENV_DIR" && \
     \
     # Installing app
