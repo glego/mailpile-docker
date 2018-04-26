@@ -13,27 +13,54 @@ build_path=$(pwd)
 
 printf "Current work directory '$(pwd)'\n"
 
-source ./.env # Get the script variables (Script Scope)
+# Initialize the variables within the script scope.
+# This will allow the variables to be passed between functions.
+app_name=
+app_version=
+app_distribution=
+app_distribution_arch=
+docker_repository=
+docker_tag_version=
+docker_tag_latest=
+docker_no_cache=
+docker_push=
+build_architecture=
+build_os_release_id=
+build_path=
 
 print_help() {
 cat <<-HELP
-This script will help you to get build applications from github 
-into docker containers. You need to provide the following arguments:
+#
+# Docker build
+#
+
+Helps you build docker images and push them to docker hub.
 
   1) --app_name (Required): Application name which will also be the name of the docker container
   2) --app_version (Required): Application version tagged in github
-  3) --app_distribution (Required): Provide the distribution os (e.g. alpine-3.6)
+  3) --app_distribution (Required): Provide the distribution os (e.g. alpine-3.5)
   4) --docker_repository (Required): Docker repository (e.g. repository\app-name)
+  5) --docker_no_cache (Flag): Will build the docker image without using cache
+  6) --docker_push (Flag): Will push the image to docker hub, requires DOCKER_USERNAME and DOCKER_PASSWORD as environment variables
 
+## Examples
 
-Example ./build.sh --app_name=mailpile --app_version=1.0.0rc2 --app_distribution=alpine-3.6 --docker_repository=glego 
+# 1) Build application
+ ./build.sh --app_name=mailpile --app_version=1.0.0rc2 --app_distribution=alpine-3.5 --docker_repository=glego 
+
+# 2) Build application without using cache
+./build.sh --app_name=mailpile --app_version=1.0.0rc2 --app_distribution=alpine-3.5 --docker_repository=glego --docker_no_cache
+
+# 3) Build application without using cache and push to docker hub
+export DOCKER_USERNAME="DockerUsername"
+export DOCKER_PASSWORD="DockerPassword"
+./build.sh --app_name=mailpile --app_version=1.0.0rc2 --app_distribution=alpine-3.5 --docker_repository=glego --docker_no_cache --docker_push
+
 HELP
     exit 0
 }
 
-# Parsing Arguments
 parse_arguments() {
-
     while [ "$#" -gt 0 ]; do
     case "$1" in
         --app_name=*)
@@ -45,8 +72,11 @@ parse_arguments() {
         --docker_repository=*)
             docker_repository="${1#*=}"
             ;;
-        --docker_no_cache=*)
+        --docker_no_cache)
             docker_no_cache="--no-cache"
+            ;;
+        --docker_push)
+            docker_push="yes"
             ;;
         --app_distribution=*)
             app_distribution="${1#*=}"
@@ -61,9 +91,8 @@ parse_arguments() {
 }
 
 check_arguments(){
-
     if [ "$app_name" = "" ];then
-        >&2 printf "Error: Please provide a valid app_name.\n"
+        >&2 printf "Error: Please provide a valid app_name.\n" # >&2: Redirect printf to stderr
         exit 1
     else
         app_name=${app_name// /} # Replace all spaces
@@ -102,7 +131,7 @@ get_cpu_architecture()
     echo "Architecture: $build_architecture"
 
     if [ "$build_architecture" = "armv7l" ];then
-        app_distribution_arch="arm32v6"
+        app_distribution_arch="arm32v7"
         docker_tag_version="$arch-$app_version"
         docker_tag_latest="$arch-latest"
     elif [ "$build_architecture" = "x86_64" ];then
@@ -157,6 +186,25 @@ build()
         -f ./dockerfiles/$app_distribution/$app_distribution_arch/Dockerfile .
 }
 
+check_push_environments(){
+
+    if [ "$DOCKER_USERNAME" = "" ];then
+        echo "ERROR: Please provide a valid docker username."
+        exit 1
+    fi
+
+    if [ "$DOCKER_PASSWORD" = "" ];then
+        echo "ERROR: Please provide a valid docker password."
+        exit 1
+    fi
+}
+
+push(){
+    echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+    docker push $docker_repository/$app_name:$docker_tag_version
+    docker push $docker_repository/$app_name:$docker_tag_latest
+}
+
 main()
 {
     parse_arguments $args   # Parse all arguments
@@ -164,6 +212,9 @@ main()
     check_lscpu             # Check if lscpu is installed (required for get_cpu_architecture)
     get_cpu_architecture    # Get the cpu architure to prepare build
     build                   # Start building docker image
+    if [ "$docker_push" = "yes" ];then
+        push                # Push image to docker hub
+    fi
 }
 
 main
