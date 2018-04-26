@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e # Error Sensitive Mode, which will break out of the script in case of unexpected errors.
 #set noclobber # Noclobber mode which protects accidental file clobbering. Use >| operator to force the file to be overwritten.
 
