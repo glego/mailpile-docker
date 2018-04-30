@@ -132,8 +132,8 @@ get_cpu_architecture()
 
     if [ "$build_architecture" = "armv7l" ];then
         app_distribution_arch="arm32v7"
-        docker_tag_version="$arch-$app_version"
-        docker_tag_latest="$arch-latest"
+        docker_tag_version="$app_distribution_arch-$app_version"
+        docker_tag_latest="$app_distribution_arch-latest"
     elif [ "$build_architecture" = "x86_64" ];then
         app_distribution_arch="x86_64"
         docker_tag_version="$app_version"
