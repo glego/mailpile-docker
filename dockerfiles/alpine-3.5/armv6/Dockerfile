@@ -1,4 +1,4 @@
-FROM arm32v6/alpine:3.6
+FROM arm32v6/alpine:3.5
 
 ARG APP_NAME="mailpile"
 ARG APP_VERSION="1.0.0rc2"
