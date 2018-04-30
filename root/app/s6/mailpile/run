@@ -1,5 +1,3 @@
 #!/bin/sh
 # workdir $APP_DIR set by dockerfile
 su-exec mailpile "$APP_DIR/mp" "--www=0.0.0.0:33411" "--wait"
-
-
