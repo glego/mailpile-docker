@@ -29,8 +29,7 @@ docker run --name mailpile -p 33411:33411 -d glego/mailpile:arm32v6-latest
 
 ## Todo
 - [ ] Docs
-- [ ] Check why venv (building python dependencies from source) is not working. "Error Message: Segmentation fault"
- 
+
 ## References
 * [Mailpile installation linux](https://github.com/mailpile/Mailpile/wiki/Getting-started-on-Linux): Getting started and dependencies
 * [Mailpile Web Interface](https://github.com/mailpile/Mailpile/wiki/Using-the-Web-Interface): How to run mailpile without cli
