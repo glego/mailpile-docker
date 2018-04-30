@@ -13,9 +13,15 @@
 * Docker
 
 ### 2. Run mailpile
+
 Run mailpile deattached
 ```
 docker run --name mailpile -p 33411:33411 -d glego/mailpile:latest
+```
+
+Run mailpile on a raspberry pi
+```
+docker run --name mailpile -p 33411:33411 -d glego/mailpile:arm32v6-latest
 ```
 
 ### 3. Login to mailpile and set password
@@ -24,7 +30,6 @@ docker run --name mailpile -p 33411:33411 -d glego/mailpile:latest
 ## Todo
 - [ ] Docs
 - [ ] Check why venv (building python dependencies from source) is not working. "Error Message: Segmentation fault"
-- [ ] Make raspberry pi image
  
 ## References
 * [Mailpile installation linux](https://github.com/mailpile/Mailpile/wiki/Getting-started-on-Linux): Getting started and dependencies
