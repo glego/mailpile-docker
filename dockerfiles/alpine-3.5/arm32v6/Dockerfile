@@ -53,7 +53,7 @@ RUN \
     update-ca-certificates && \
     cd "/tmp/" && \
     wget "https://github.com/just-containers/s6-overlay/releases/download/v1.21.4.0/s6-overlay-armhf.tar.gz" && \
-    tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
+    tar xzf /tmp/s6-overlay-armhf.tar.gz -C / && \
     \
     # Create users and groups
     addgroup -S mailpile && adduser -S -h /mailpile-data -G mailpile mailpile && \
